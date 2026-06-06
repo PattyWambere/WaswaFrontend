@@ -139,6 +139,9 @@ export const AppLayout: React.FC = () => {
                             <Link to="/security" className="p-2 text-slate-400 hover:text-white">
                                 <UserIcon className="w-5 h-5" />
                             </Link>
+                            <button onClick={logout} className="p-2 text-error hover:bg-error/10 rounded-lg transition-colors">
+                                <LogOut className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </header>
