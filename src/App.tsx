@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Login, Register, ForgotPassword } from './pages/Auth';
@@ -13,6 +14,7 @@ import { Maintenance } from './pages/Maintenance';
 import { Landing } from './pages/Landing';
 import { PrivateRoute, AppLayout } from './components/Navigation';
 
+
 import { Notifications } from './pages/Notifications';
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
     <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
+          <Analytics />
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Landing />} />
