@@ -40,7 +40,7 @@ export const Dashboard: React.FC = () => {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 className="text-3xl font-bold text-white">Welcome back, {user?.fullName?.split(' ')[0] || 'User'}!</h2>
+                    <h2 className="text-3xl font-bold text-white">Welcome back, {user?.fullName || 'User'}!</h2>
                     <p className="text-slate-400 mt-1">Here's what's happening with your assets today.</p>
                 </div>
             </div>
@@ -50,12 +50,12 @@ export const Dashboard: React.FC = () => {
                 <h3 className="text-xl font-bold text-white flex items-center gap-2">
                     <Wallet className="w-5 h-5 text-primary" /> Your Balances
                 </h3>
-                <div className="flex gap-3 w-full sm:w-auto">
-                    <Link to="/deposit" className="btn-secondary flex items-center justify-center gap-2 flex-1 sm:flex-none">
-                        <ArrowDownLeft className="w-4 h-4" /> Deposit
+                <div className="grid grid-cols-2 sm:flex gap-3 w-full sm:w-auto mt-4 sm:mt-0">
+                    <Link to="/deposit" className="btn-secondary flex items-center justify-center gap-2 text-sm sm:text-base py-3">
+                        <ArrowDownLeft className="w-4 h-4 shrink-0" /> <span className="truncate">Deposit</span>
                     </Link>
-                    <Link to="/withdraw" className="btn-primary flex items-center justify-center gap-2 flex-1 sm:flex-none">
-                        <ArrowUpRight className="w-4 h-4" /> Withdraw
+                    <Link to="/withdraw" className="btn-primary flex items-center justify-center gap-2 text-sm sm:text-base py-3">
+                        <ArrowUpRight className="w-4 h-4 shrink-0" /> <span className="truncate">Withdraw</span>
                     </Link>
                 </div>
             </div>

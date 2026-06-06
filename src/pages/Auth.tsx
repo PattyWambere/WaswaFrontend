@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
-import { Mail, Lock, Loader2, AlertCircle, User as UserIcon, Phone } from 'lucide-react';
+import { Mail, Lock, Loader2, AlertCircle, User as UserIcon, Phone, ArrowLeft } from 'lucide-react';
 
 export const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -36,6 +36,10 @@ export const Login: React.FC = () => {
     return (
         <div className="min-h-screen bg-dark flex items-center justify-center p-4">
             <div className="max-w-md w-full">
+                <Link to="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8 text-sm font-medium">
+                    <ArrowLeft className="w-4 h-4" /> Back to Home
+                </Link>
+                
                 <div className="text-center mb-10">
                     <div className="mb-4">
                         <span className="text-4xl font-black text-white" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "1px" }}>CrossTradeX</span>
@@ -136,6 +140,10 @@ export const ForgotPassword: React.FC = () => {
     return (
         <div className="min-h-screen bg-dark flex items-center justify-center p-4">
             <div className="max-w-md w-full">
+                <Link to="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8 text-sm font-medium">
+                    <ArrowLeft className="w-4 h-4" /> Back to Home
+                </Link>
+
                 <div className="text-center mb-10">
                     <div className="mb-4">
                         <span className="text-4xl font-black text-white" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "1px" }}>CrossTradeX</span>
@@ -288,8 +296,12 @@ export const Register: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark flex items-center justify-center p-4">
+        <div className="min-h-screen bg-dark flex items-center justify-center p-4 py-12">
             <div className="max-w-md w-full">
+                <Link to="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8 text-sm font-medium">
+                    <ArrowLeft className="w-4 h-4" /> Back to Home
+                </Link>
+
                 <div className="text-center mb-10">
                     <div className="mb-4">
                         <span className="text-4xl font-black text-white" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "1px" }}>CrossTradeX</span>
