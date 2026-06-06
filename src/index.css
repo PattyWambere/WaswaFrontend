@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-dark: 248 250 252;
+  --color-bg-dark-lighter: 255 255 255;
+  --color-bg-dark-lightest: 241 245 249;
+  --color-primary: 59 130 246;
+  --color-primary-dark: 37 99 235;
+  --color-primary-light: 96 165 250;
+  --color-success: 5 150 105;
+  --color-error: 220 38 38;
+  --color-warning: 217 119 6;
+
+  --color-text-100: 15 23 42;
+  --color-text-200: 30 41 59;
+  --color-text-300: 51 65 85;
+  --color-text-400: 71 85 105;
+  --color-text-500: 100 116 139;
+  --color-border-600: 203 213 225;
+  --color-border-700: 226 232 240;
+  --color-border-800: 241 245 249;
+  --color-border-900: 248 250 252;
+
+  --color-white: 15 23 42;
+  --color-black: 255 255 255;
+}
+
+.dark {
+  --color-bg-dark: 15 23 42;
+  --color-bg-dark-lighter: 30 41 59;
+  --color-bg-dark-lightest: 51 65 85;
+  --color-primary: 59 130 246;
+  --color-primary-dark: 37 99 235;
+  --color-primary-light: 96 165 250;
+  --color-success: 16 185 129;
+  --color-error: 239 68 68;
+  --color-warning: 245 158 11;
+
+  --color-text-100: 241 245 249;
+  --color-text-200: 226 232 240;
+  --color-text-300: 203 213 225;
+  --color-text-400: 148 163 184;
+  --color-text-500: 100 116 139;
+  --color-border-600: 71 85 105;
+  --color-border-700: 51 65 85;
+  --color-border-800: 30 41 59;
+  --color-border-900: 15 23 42;
+
+  --color-white: 255 255 255;
+  --color-black: 0 0 0;
+}
+
+@layer base {
+  body {
+    @apply bg-dark text-slate-100 min-h-screen;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg font-medium transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-dark-lighter hover:bg-dark-lightest text-slate-300 px-4 py-2 rounded-lg font-medium transition-all active:scale-95;
+  }
+
+  .card {
+    @apply bg-dark-lighter border border-slate-700/50 rounded-xl p-6 shadow-xl;
+  }
+
+  .input-field {
+    @apply bg-dark-lighter border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-slate-100 placeholder:text-slate-500;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-slate-400 mb-1.5;
+  }
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors;
+}
+
+@layer utilities {
+  @keyframes textShimmer {
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-text-shimmer {
+    background-size: 200% auto;
+    animation: textShimmer 6s ease-in-out infinite;
+  }
+}
