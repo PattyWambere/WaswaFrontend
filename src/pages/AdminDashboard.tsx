@@ -147,12 +147,13 @@ export const AdminDashboard: React.FC = () => {
     };
 
     const handleApproveWithdrawal = async (id: string) => {
-        const hash = prompt('Please enter the TRC20 Transaction Hash for this transfer:');
-        if (!hash) return;
+        if (!confirm('Confirm that the funds have been sent to the user?')) return;
         try {
-            await api.post(`/admin/withdrawals/${id}/approve`, { txHash: hash });
+            await api.post(`/admin/withdrawals/${id}/approve`, {});
             fetchData();
-        } catch (err) { alert('Failed to approve'); }
+        } catch (err: any) { 
+            alert(`Failed to approve: ${err.response?.data?.error || err.message}`);
+        }
     };
 
     const toggleAsset = async (id: string, enabled: boolean) => {
