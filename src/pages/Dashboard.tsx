@@ -98,44 +98,49 @@ export const Dashboard: React.FC = () => {
                     <Link to="/history" className="text-primary text-sm font-medium hover:underline">View All</Link>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                <div className="overflow-x-auto pb-4">
+                    <table className="w-full text-left whitespace-nowrap min-w-[600px]">
                         <thead>
                             <tr className="border-b border-slate-700/50 text-slate-500 text-sm">
-                                <th className="pb-3 font-medium">Type</th>
-                                <th className="pb-3 font-medium">Asset</th>
-                                <th className="pb-3 font-medium">Amount</th>
-                                <th className="pb-3 font-medium">Status</th>
-                                <th className="pb-3 font-medium text-right">Date</th>
+                                <th className="pb-3 px-2 font-medium">Type</th>
+                                <th className="pb-3 px-2 font-medium">Asset</th>
+                                <th className="pb-3 px-2 font-medium">Amount</th>
+                                <th className="pb-3 px-2 font-medium">Status</th>
+                                <th className="pb-3 px-2 font-medium text-right">Date</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-700/30">
                             {history.map((tx) => (
-                                <tr key={tx._id} className="group">
-                                    <td className="py-4">
+                                <tr key={tx._id} className="group hover:bg-slate-800/30 transition-colors">
+                                    <td className="py-4 px-2">
                                         <div className="flex items-center gap-2">
                                             {tx.type === 'deposit' ? (
-                                                <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center">
+                                                <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0">
                                                     <ArrowDownLeft className="w-4 h-4 text-success" />
                                                 </div>
                                             ) : (
-                                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                                                     <ArrowUpRight className="w-4 h-4 text-primary" />
                                                 </div>
                                             )}
                                             <span className="capitalize text-white font-medium">{tx.type}</span>
                                         </div>
                                     </td>
-                                    <td className="py-4 text-slate-300">{tx.asset} / {tx.network}</td>
-                                    <td className="py-4 text-white font-mono">{tx.amount}</td>
-                                    <td className="py-4">
+                                    <td className="py-4 px-2 text-slate-300">
+                                        <div className="flex flex-col">
+                                            <span className="font-medium">{tx.asset}</span>
+                                            <span className="text-xs text-slate-500">{tx.network}</span>
+                                        </div>
+                                    </td>
+                                    <td className="py-4 px-2 text-white font-mono">{tx.amount}</td>
+                                    <td className="py-4 px-2">
                                         <span className={`px-2 py-1 rounded-full text-xs font-semibold
                       ${tx.status === 'completed' || tx.status === 'approved' ? 'bg-success/10 text-success' :
                                                 tx.status === 'pending' ? 'bg-warning/10 text-warning' : 'bg-error/10 text-error'}`}>
                                             {tx.status}
                                         </span>
                                     </td>
-                                    <td className="py-4 text-slate-500 text-sm text-right">
+                                    <td className="py-4 px-2 text-slate-500 text-sm text-right">
                                         {new Date(tx.createdAt).toLocaleDateString()}
                                     </td>
                                 </tr>
