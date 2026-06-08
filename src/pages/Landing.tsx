@@ -70,7 +70,7 @@ export const Landing: React.FC = () => {
                 <div className="max-w-7xl mx-auto text-center relative z-10">
 
 
-                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 sm:mb-8 animate-in mt-2 fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2 sm:px-0 leading-tight">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 sm:mb-8 animate-in mt-2 fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2 sm:px-0 leading-tight" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "1px" }}>
                         Secure Custody for the <br className="hidden sm:block" />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-400 to-primary-light animate-text-shimmer">
                             DeFi Generation
