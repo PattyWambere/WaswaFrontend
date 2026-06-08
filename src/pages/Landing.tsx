@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Zap, Globe, ArrowRight, Wallet, Lock, Sun, Moon } from 'lucide-react';
+import {
+    Lightning, Globe, ArrowRight, Wallet, Lock, Sun, Moon,
+    ShieldCheck, BookOpen, FirstAidKit, FileText, CaretRight,
+    ArrowUpRight
+} from '@phosphor-icons/react';
+import { FaXTwitter, FaTelegram } from 'react-icons/fa6';
 import { useTheme } from '../context/ThemeContext';
 
 export const Landing: React.FC = () => {
@@ -19,13 +24,13 @@ export const Landing: React.FC = () => {
                         </div>
                         <div className="flex items-center gap-2 sm:gap-4">
                             <button onClick={toggleTheme} className="p-2 text-slate-400 hover:text-white transition-colors">
-                                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                                {theme === 'dark' ? <Sun size={20} weight="fill" /> : <Moon size={20} weight="fill" />}
                             </button>
                             <Link to="/login" className="text-slate-300 hover:text-white font-medium transition-colors px-2 sm:px-4 py-2 text-sm sm:text-base hidden xs:block">
                                 Sign In
                             </Link>
                             <Link to="/register" className="btn-primary flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 text-sm sm:text-base">
-                                Get Started <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                                Get Started <ArrowRight size={16} weight="bold" />
                             </Link>
                         </div>
                     </div>
@@ -63,13 +68,7 @@ export const Landing: React.FC = () => {
                 </div>
 
                 <div className="max-w-7xl mx-auto text-center relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold mb-6 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                        </span>
-                        CrossTradeX v2.0 is Live
-                    </div>
+
 
                     <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-white tracking-tight mb-6 sm:mb-8 animate-in mt-2 fade-in slide-in-from-bottom-6 duration-700 delay-100 px-2 sm:px-0 leading-tight">
                         Secure Custody for the <br className="hidden sm:block" />
@@ -84,9 +83,9 @@ export const Landing: React.FC = () => {
 
                     <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300 px-4 sm:px-0">
                         <Link to="/register" className="btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 flex items-center justify-center gap-2 w-full sm:w-auto">
-                            Open Free Account <ArrowRight className="w-5 h-5" />
+                            Open Free Account <ArrowUpRight size={20} weight="bold" />
                         </Link>
-                        <a href="#features" className="px-6 sm:px-8 py-3 sm:py-4 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-white rounded-xl font-bold transition-all flex items-center justify-center w-full sm:w-auto">
+                        <a href="#features" className="px-6 sm:px-8 py-3 sm:py-4 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-700 text-white font-bold transition-all flex items-center justify-center w-full sm:w-auto">
                             Explore Features
                         </a>
                     </div>
@@ -104,7 +103,7 @@ export const Landing: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
                         <div className="card bg-dark/50 hover:bg-slate-800/50 transition-colors border-slate-800 group">
                             <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center mb-6 border border-primary/20 group-hover:scale-110 transition-transform duration-300">
-                                <Lock className="w-7 h-7 text-primary" />
+                                <Lock size={28} weight="duotone" className="text-primary" />
                             </div>
                             <h3 className="text-xl font-bold text-white mb-3">Enterprise Security</h3>
                             <p className="text-slate-400 leading-relaxed">
@@ -114,7 +113,7 @@ export const Landing: React.FC = () => {
 
                         <div className="card bg-dark/50 hover:bg-slate-800/50 transition-colors border-slate-800 group">
                             <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
-                                <Globe className="w-7 h-7 text-blue-400" />
+                                <Globe size={28} weight="duotone" className="text-blue-400" />
                             </div>
                             <h3 className="text-xl font-bold text-white mb-3">Multi-Chain Ecosystem</h3>
                             <p className="text-slate-400 leading-relaxed">
@@ -124,7 +123,7 @@ export const Landing: React.FC = () => {
 
                         <div className="card bg-dark/50 hover:bg-slate-800/50 transition-colors border-slate-800 group">
                             <div className="w-14 h-14 bg-success/10 rounded-2xl flex items-center justify-center mb-6 border border-success/20 group-hover:scale-110 transition-transform duration-300">
-                                <Zap className="w-7 h-7 text-success" />
+                                <Lightning size={28} weight="duotone" className="text-success" />
                             </div>
                             <h3 className="text-xl font-bold text-white mb-3">Lightning Fast Execution</h3>
                             <p className="text-slate-400 leading-relaxed">
@@ -166,23 +165,113 @@ export const Landing: React.FC = () => {
                     <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 sm:mb-6">Ready to secure your portfolio?</h2>
                     <p className="text-lg sm:text-xl text-slate-400 mb-8 sm:mb-10">Join thousands of users who trust CrossTradeX with their digital assets.</p>
                     <Link to="/register" className="btn-primary text-base sm:text-lg px-8 sm:px-10 py-3 sm:py-4 flex sm:inline-flex items-center justify-center gap-3 w-full sm:w-auto">
-                        <Wallet className="w-5 h-5 sm:w-6 sm:h-6" /> Start Building Your Wealth
+                        <Wallet size={22} weight="duotone" /> Start Building Your Wealth
                     </Link>
                 </div>
             </div>
 
             {/* Footer */}
-            <footer className="bg-slate-900 py-12 border-t border-slate-800">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-2 opacity-50">
-                        <span className="text-xl font-black text-white" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "1px" }}>CrossTradeX</span>
+            <footer className="bg-slate-900 border-t border-slate-800">
+                {/* Main footer body */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+                        {/* Brand column */}
+                        <div className="lg:col-span-1">
+                            <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary via-blue-400 to-white" style={{ fontFamily: "'Orbitron', sans-serif", letterSpacing: "1px" }}>CrossTradeX</span>
+                            <p className="mt-4 text-slate-400 text-sm leading-relaxed">
+                                Institutional-grade custody and cross-chain asset management — built for the DeFi generation.
+                            </p>
+                            {/* Social links */}
+                            <div className="flex items-center gap-3 mt-6">
+                                <a href="#" aria-label="X / Twitter" className="w-9 h-9 flex items-center justify-center border border-slate-700 text-slate-400 hover:text-primary hover:border-primary transition-all duration-200">
+                                    <FaXTwitter size={16} />
+                                </a>
+                                <a href="#" aria-label="Telegram" className="w-9 h-9 flex items-center justify-center border border-slate-700 text-slate-400 hover:text-sky-400 hover:border-sky-400 transition-all duration-200">
+                                    <FaTelegram size={16} />
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Platform links */}
+                        <div>
+                            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-5">Platform</h4>
+                            <ul className="space-y-3">
+                                {[
+                                    { label: 'Features', href: '#features' },
+                                    { label: 'Security', href: '#' },
+                                    { label: 'Cross-Chain', href: '#' },
+                                    { label: 'Pricing', href: '#' },
+                                ].map((link) => (
+                                    <li key={link.label}>
+                                        <a href={link.href} className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors group">
+                                            <CaretRight size={12} weight="bold" className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            {link.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Company links */}
+                        <div>
+                            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-5">Company</h4>
+                            <ul className="space-y-3">
+                                {[
+                                    { label: 'About Us', href: '#' },
+                                    { label: 'Blog', href: '#' },
+                                    { label: 'Careers', href: '#' },
+                                    { label: 'Contact', href: '#' },
+                                ].map((link) => (
+                                    <li key={link.label}>
+                                        <a href={link.href} className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors group">
+                                            <CaretRight size={12} weight="bold" className="text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            {link.label}
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        {/* Trust badges */}
+                        <div>
+                            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-5">Trust & Safety</h4>
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-3 p-3 border border-slate-800 bg-slate-800/30">
+                                    <ShieldCheck size={20} weight="duotone" className="text-primary flex-shrink-0" />
+                                    <span className="text-xs text-slate-400">Military-grade encryption</span>
+                                </div>
+                                <div className="flex items-center gap-3 p-3 border border-slate-800 bg-slate-800/30">
+                                    <Globe size={20} weight="duotone" className="text-blue-400 flex-shrink-0" />
+                                    <span className="text-xs text-slate-400">Multi-chain verified</span>
+                                </div>
+                                <div className="flex items-center gap-3 p-3 border border-slate-800 bg-slate-800/30">
+                                    <Lightning size={20} weight="duotone" className="text-success flex-shrink-0" />
+                                    <span className="text-xs text-slate-400">99.9% uptime guaranteed</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
-                    <p className="text-slate-500 text-sm">
-                        &copy; {new Date().getFullYear()} CrossTradeX. All rights reserved.
-                    </p>
-                    <div className="flex gap-6 text-sm font-medium text-slate-500">
-                        <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
+                </div>
+
+                {/* Bottom bar */}
+                <div className="border-t border-slate-800">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <p className="text-slate-500 text-xs">
+                            &copy; {new Date().getFullYear()} CrossTradeX. All rights reserved.
+                        </p>
+                        <div className="flex items-center gap-6 text-xs font-medium text-slate-500">
+                            <a href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                <FileText size={14} weight="duotone" /> Privacy Policy
+                            </a>
+                            <a href="#" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                <BookOpen size={14} weight="duotone" /> Terms of Service
+                            </a>
+                            <a href="mailto:ardyy250@gmail.com" className="flex items-center gap-1.5 hover:text-primary transition-colors">
+                                <FirstAidKit size={14} weight="duotone" /> Support
+                            </a>
+                        </div>
                     </div>
                 </div>
             </footer>
