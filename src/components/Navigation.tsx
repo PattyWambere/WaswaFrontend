@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Navigate, useLocation, Outlet, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { LayoutDashboard, History, Download, Upload, Settings, LogOut, User as UserIcon, ArrowLeft, Sun, Moon, LineChart, Bell } from 'lucide-react';
+import { LogOut, User as UserIcon, ArrowLeft, Sun, Moon, Bell } from 'lucide-react';
+import { MdDashboard, MdShowChart, MdFileDownload, MdFileUpload, MdHistory, MdSettings } from 'react-icons/md';
 import api from '../api/api';
 
 export const PrivateRoute: React.FC<{ children?: React.ReactNode; adminOnly?: boolean }> = ({ children, adminOnly = false }) => {
@@ -32,12 +33,12 @@ export const AppLayout: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const navItems = [
-        { label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', roles: ['user', 'admin'] },
-        { label: 'Trading', icon: LineChart, path: '/trading', roles: ['user', 'admin'] },
-        { label: 'Deposit', icon: Download, path: '/deposit', roles: ['user', 'admin'] },
-        { label: 'Withdraw', icon: Upload, path: '/withdraw', roles: ['user', 'admin'] },
-        { label: 'History', icon: History, path: '/history', roles: ['user', 'admin'] },
-        { label: 'Admin Panel', icon: Settings, path: '/admin', roles: ['admin'] },
+        { label: 'Dashboard', icon: MdDashboard, path: '/dashboard', roles: ['user', 'admin'] },
+        { label: 'Trading', icon: MdShowChart, path: '/trading', roles: ['user', 'admin'] },
+        { label: 'Deposit', icon: MdFileDownload, path: '/deposit', roles: ['user', 'admin'] },
+        { label: 'Withdraw', icon: MdFileUpload, path: '/withdraw', roles: ['user', 'admin'] },
+        { label: 'History', icon: MdHistory, path: '/history', roles: ['user', 'admin'] },
+        { label: 'Admin Panel', icon: MdSettings, path: '/admin', roles: ['admin'] },
     ];
 
     const [unreadCount, setUnreadCount] = useState(0);
@@ -160,10 +161,12 @@ export const AppLayout: React.FC = () => {
                         <Link
                             key={item.path}
                             to={item.path}
-                            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-colors ${isActive ? 'text-primary' : 'text-slate-500 hover:text-slate-300'}`}
+                            className={`flex flex-col items-center gap-1 min-w-[64px] transition-colors ${isActive ? 'text-primary' : 'text-slate-400 hover:text-slate-200'}`}
                         >
-                            <item.icon className={`w-5 h-5 ${isActive ? 'text-primary' : ''}`} />
-                            <span className="text-[10px] font-medium">{item.label}</span>
+                            <div className={`px-4 py-1 rounded-full transition-all duration-300 ${isActive ? 'bg-primary/20 scale-110' : 'scale-100'}`}>
+                                <item.icon className={`w-6 h-6 ${isActive ? 'text-primary' : ''}`} />
+                            </div>
+                            <span className={`text-[10px] font-semibold transition-all duration-300 ${isActive ? 'font-bold' : ''}`}>{item.label}</span>
                         </Link>
                     );
                 })}
