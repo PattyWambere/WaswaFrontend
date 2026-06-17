@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import { Transaction, Asset, Network, WalletSettings, Balance, AppSettings } from '../types';
 import { 
     ShieldCheck, ShieldAlert, BadgeCheck, XCircle, RefreshCw, Loader2, Download, Upload, CircleAlert,
-    Copy
+    Copy, Eye
 } from 'lucide-react';
 import { LivePnL } from '../components/LivePnL';
 
@@ -33,6 +34,7 @@ export const AdminDashboard: React.FC = () => {
         type: 'daily' as 'daily' | 'bonus',
         timeSlot: '12:30' as '12:30' | '14:30'
     });
+    const navigate = useNavigate();
 
     // Create Wallet State
     const [isAddingWallet, setIsAddingWallet] = useState(false);
@@ -235,27 +237,40 @@ export const AdminDashboard: React.FC = () => {
                                         <th className="pb-3">User</th>
                                         <th className="pb-3">Asset/Network</th>
                                         <th className="pb-3">Amount</th>
-                                        <th className="pb-3">Submitted TX Hash</th>
+                                        <th className="pb-3">Proof</th>
                                         <th className="pb-3 text-right">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-700/30">
                                     {pendingDeposits.map(dep => (
-                                        <tr key={dep._id}>
-                                            <td className="py-4 text-slate-200">{getUserEmail(dep.userId)}</td>
+                                        <tr key={dep._id} onClick={() => navigate(`/admin/deposit/${dep._id}`)} className="cursor-pointer hover:bg-slate-800/50 transition-colors group">
+                                            <td className="py-4 text-slate-200 pl-4">{getUserEmail(dep.userId)}</td>
                                             <td className="py-4 text-slate-400 text-sm">{dep.asset} / {dep.network}</td>
                                             <td className="py-4 text-white font-mono">{dep.amount}</td>
-                                            <td className="py-4 font-mono text-xs text-primary truncate max-w-[150px]">
-                                                <a href={`https://tronscan.org/#/transaction/${dep.txHash}`} target="_blank" rel="noreferrer" className="hover:underline">
-                                                    {dep.txHash}
-                                                </a>
+                                            <td className="py-4">
+                                                <div className="space-y-1">
+                                                    {dep.txHash ? (
+                                                        <span className="text-primary text-xs font-mono truncate block max-w-[160px]">
+                                                            {dep.txHash.slice(0,12)}...{dep.txHash.slice(-6)}
+                                                        </span>
+                                                    ) : <span className="text-slate-600 text-xs">No TX ID</span>}
+                                                    {(dep as any).proofImageUrl && (
+                                                        <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20">Has Image</span>
+                                                    )}
+                                                    {!dep.txHash && !(dep as any).proofImageUrl && (
+                                                        <span className="text-slate-600 text-xs italic">No proof yet</span>
+                                                    )}
+                                                </div>
                                             </td>
-                                            <td className="py-4 text-right">
+                                            <td className="py-4 text-right pr-4">
                                                 <div className="flex justify-end gap-2">
-                                                    <button onClick={() => handleApproveDeposit(dep._id)} className="p-2 bg-success/10 text-success hover:bg-success/20 rounded-lg transition-colors">
+                                                    <button onClick={(e) => { e.stopPropagation(); navigate(`/admin/deposit/${dep._id}`); }} className="p-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg transition-colors" title="View Details">
+                                                        <Eye className="w-5 h-5" />
+                                                    </button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleApproveDeposit(dep._id); }} className="p-2 bg-success/10 text-success hover:bg-success/20 rounded-lg transition-colors" title="Approve">
                                                         <BadgeCheck className="w-5 h-5" />
                                                     </button>
-                                                    <button onClick={async () => { if (confirm('Reject?')) await api.post(`/admin/deposits/${dep._id}/reject`); fetchData(); }} className="p-2 bg-error/10 text-error hover:bg-error/20 rounded-lg transition-colors">
+                                                    <button onClick={async (e) => { e.stopPropagation(); if (confirm('Reject?')) await api.post(`/admin/deposits/${dep._id}/reject`); fetchData(); }} className="p-2 bg-error/10 text-error hover:bg-error/20 rounded-lg transition-colors" title="Reject">
                                                         <XCircle className="w-5 h-5" />
                                                     </button>
                                                 </div>
@@ -861,7 +876,7 @@ export const AdminDashboard: React.FC = () => {
                             </table>
                         </div>
                     </div>
-                </div>
+                    </div>
             )}
         </div>
     );

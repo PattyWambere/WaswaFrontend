@@ -10,6 +10,7 @@ import { Security } from './pages/Security';
 import { Deposit, Withdraw } from './pages/Transactions';
 import { History } from './pages/History';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminDepositDetails } from './pages/AdminDepositDetails';
 import { Maintenance } from './pages/Maintenance';
 import { Landing } from './pages/Landing';
 import { PrivateRoute, AppLayout } from './components/Navigation';
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/security" element={<Security />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/admin" element={<PrivateRoute adminOnly={true}><AdminDashboard /></PrivateRoute>} />
+                <Route path="/admin/deposit/:id" element={<PrivateRoute adminOnly={true}><AdminDepositDetails /></PrivateRoute>} />
               </Route>
             </Route>
 

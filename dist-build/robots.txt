@@ -1,0 +1,25 @@
+# CrossChainX - robots.txt
+# https://crosschainx.app/robots.txt
+
+User-agent: *
+
+# Allow public pages
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /forgot-password
+
+# Block private/authenticated pages from being indexed
+Disallow: /dashboard
+Disallow: /trading
+Disallow: /deposit
+Disallow: /withdraw
+Disallow: /history
+Disallow: /security
+Disallow: /notifications
+Disallow: /admin
+Disallow: /maintenance
+Disallow: /reset-password
+
+# Sitemap location
+Sitemap: https://crosschainx.app/sitemap.xml
