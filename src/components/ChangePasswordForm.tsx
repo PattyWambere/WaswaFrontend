@@ -36,9 +36,9 @@ const ChangePasswordForm: React.FC = () => {
     };
 
     return (
-        <div className="card space-y-6 max-w-2xl mx-auto">
-            <div className="flex items-center gap-3 border-b border-slate-700/50 pb-4">
-                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
+        <div className="card max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
                     <Shield className="w-6 h-6" />
                 </div>
                 <div>
@@ -103,11 +103,11 @@ const ChangePasswordForm: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="pt-4">
+                <div className="flex justify-end pt-4">
                     <button
                         type="submit"
                         disabled={loading}
-                        className="btn-primary w-full py-3 flex items-center justify-center gap-2"
+                        className="btn-primary rounded-none px-8 py-2.5 flex items-center justify-center gap-2"
                     >
                         {loading && <Loader2 className="w-5 h-5 animate-spin" />}
                         {loading ? 'Updating...' : 'Change Password'}

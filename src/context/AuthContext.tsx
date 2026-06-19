@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, AuthResponse } from '../types';
 import { jwtDecode } from 'jwt-decode';
+import api from '../api/api';
 
 interface AuthContextType {
     user: User | null;
@@ -29,9 +30,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
                 if (decoded.exp < currentTime) {
                     logout();
+                    setLoading(false);
                 } else {
                     setToken(storedToken);
-                    setUser(JSON.parse(storedUser));
+                    const parsedUser = JSON.parse(storedUser);
+                    setUser(parsedUser);
+
+                    // Fetch the latest profile data from backend to ensure we have fullName, phoneNumber, etc.
+                    api.get('/auth/profile')
+                        .then((res) => {
+                            const updatedUser = {
+                                ...parsedUser,
+                                fullName: res.data.fullName,
+                                phoneNumber: res.data.phoneNumber,
+                                email: res.data.email,
+                                role: res.data.role,
+                                followingCode: res.data.followingCode,
+                                savedWallets: res.data.savedWallets
+                            };
+                            localStorage.setItem('user', JSON.stringify(updatedUser));
+                            setUser(updatedUser);
+                        })
+                        .catch((err) => {
+                            console.error('Failed to sync profile', err);
+                        })
+                        .finally(() => {
+                            setLoading(false);
+                        });
+                    return; // Avoid setting loading false immediately
                 }
             } catch (error) {
                 logout();

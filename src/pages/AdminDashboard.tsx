@@ -20,7 +20,10 @@ export const AdminDashboard: React.FC = () => {
     const [balanceSearch, setBalanceSearch] = useState('');
     const [appSettings, setAppSettings] = useState<AppSettings | null>(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'pending' | 'config' | 'balances' | 'trading' | 'signals'>('pending');
+    const [activeTab, setActiveTab] = useState<'pending' | 'config' | 'balances' | 'trading' | 'signals' | 'referrals'>('pending');
+    const [referrals, setReferrals] = useState<any[]>([]);
+    const [bonusAmounts, setBonusAmounts] = useState<{ [key: string]: string }>({});
+    const [referralMessage, setReferralMessage] = useState('');
     const [pendingSettlements, setPendingSettlements] = useState<any[]>([]);
     const [signals, setSignals] = useState<any[]>([]);
     const [isAddingSignal, setIsAddingSignal] = useState(false);
@@ -92,7 +95,7 @@ export const AdminDashboard: React.FC = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [assetRes, netRes, walletRes, depRes, withRes, balRes, appRes, settleRes, signalsRes] = await Promise.all([
+            const [assetRes, netRes, walletRes, depRes, withRes, balRes, appRes, settleRes, signalsRes, refRes] = await Promise.all([
                 api.get('/admin/assets'),
                 api.get('/admin/networks'),
                 api.get('/admin/wallet-settings'),
@@ -101,7 +104,11 @@ export const AdminDashboard: React.FC = () => {
                 api.get('/admin/balances'),
                 api.get('/admin/app-settings'),
                 api.get('/trades/pending-settlements'),
-                api.get('/signals/admin')
+                api.get('/signals/admin'),
+                api.get('/admin/referrals').catch(err => {
+                    console.error('Failed to fetch referrals:', err);
+                    return { data: [] };
+                })
             ]);
 
             setAssets(assetRes.data);
@@ -113,6 +120,7 @@ export const AdminDashboard: React.FC = () => {
             setAppSettings(appRes.data);
             setPendingSettlements(settleRes.data);
             setSignals(signalsRes.data);
+            setReferrals(refRes.data);
 
             // Set default symbol if not set
             if (assetRes.data.length > 0) {
@@ -155,6 +163,25 @@ export const AdminDashboard: React.FC = () => {
             fetchData();
         } catch (err: any) { 
             alert(`Failed to approve: ${err.response?.data?.error || err.message}`);
+        }
+    };
+
+    const handleAddBonus = async (referredUserId: string) => {
+        const amount = bonusAmounts[referredUserId];
+        if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+            alert('Please enter a valid positive bonus amount');
+            return;
+        }
+        setReferralMessage('Adding bonus...');
+        try {
+            const res = await api.post(`/admin/referrals/${referredUserId}/bonus`, { amount: Number(amount) });
+            setReferralMessage(res.data.message);
+            setBonusAmounts(prev => ({ ...prev, [referredUserId]: '' }));
+            fetchData();
+        } catch (err: any) {
+            const errorMsg = err.response?.data?.error || 'Failed to add bonus';
+            alert(errorMsg);
+            setReferralMessage('');
         }
     };
 
@@ -220,6 +247,12 @@ export const AdminDashboard: React.FC = () => {
                     className={`px-6 py-3 font-medium transition-colors ${activeTab === 'signals' ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-slate-300'}`}
                 >
                     Signals
+                </button>
+                <button
+                    onClick={() => setActiveTab('referrals')}
+                    className={`px-6 py-3 font-medium transition-colors ${activeTab === 'referrals' ? 'text-primary border-b-2 border-primary' : 'text-slate-500 hover:text-slate-300'}`}
+                >
+                    Referrals ({referrals.length})
                 </button>
             </div>
 
@@ -877,6 +910,101 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                     </div>
                     </div>
+            )}
+
+            {activeTab === 'referrals' && (
+                <div className="card space-y-6">
+                    <div>
+                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                            <BadgeCheck className="w-5 h-5 text-primary" /> Referral Management
+                        </h3>
+                        <p className="text-sm text-slate-400 mt-1">
+                            Add a bonus to a referrer once their referred friend completes their first deposit.
+                        </p>
+                    </div>
+
+                    {referralMessage && (
+                        <div className="p-4 bg-success/15 border border-success/30 rounded-lg text-success text-sm flex items-center gap-2">
+                            <BadgeCheck className="w-4 h-4" /> {referralMessage}
+                        </div>
+                    )}
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left">
+                            <thead className="text-slate-500 text-sm border-b border-slate-700/50">
+                                <tr>
+                                    <th className="pb-3 pl-4">Referred User</th>
+                                    <th className="pb-3">Referred By</th>
+                                    <th className="pb-3">Joined Date</th>
+                                    <th className="pb-3">Deposits</th>
+                                    <th className="pb-3">Referrer's Bonus</th>
+                                    <th className="pb-3 text-right pr-4">Add Bonus</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-700/30">
+                                {referrals.map(r => (
+                                    <tr key={r._id} className="hover:bg-slate-800/20 transition-colors">
+                                        <td className="py-4 pl-4">
+                                            <p className="text-white font-semibold text-sm">{r.name || '—'}</p>
+                                            <p className="text-xs text-slate-500">{r.email}</p>
+                                        </td>
+                                        <td className="py-4">
+                                            <p className="text-slate-200 text-sm">{r.referredBy?.name || '—'}</p>
+                                            <p className="text-xs text-slate-500">{r.referredBy?.email || '—'}</p>
+                                            {r.referredBy?.referralCode && (
+                                                <span className="font-mono text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/20">
+                                                    {r.referredBy.referralCode}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="py-4 text-sm text-slate-300">
+                                            {new Date(r.joinedAt).toLocaleDateString()}
+                                        </td>
+                                        <td className="py-4">
+                                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
+                                                r.hasDeposited ? 'bg-success/15 text-success border border-success/30' : 'bg-error/15 text-error border border-error/30'
+                                            }`}>
+                                                {r.hasDeposited ? `✓ ${r.completedDepositCount} completed` : 'Awaiting deposit'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 font-bold text-sm text-white">
+                                            {r.currentBonus} USDT
+                                        </td>
+                                        <td className="py-4 text-right pr-4">
+                                            <div className="flex justify-end items-center gap-2">
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    step="0.01"
+                                                    placeholder="Amount"
+                                                    value={bonusAmounts[r._id] || ''}
+                                                    onChange={(e) => setBonusAmounts(prev => ({ ...prev, [r._id]: e.target.value }))}
+                                                    disabled={!r.hasDeposited}
+                                                    className="bg-slate-900 border border-slate-700 rounded px-2.5 py-1 text-xs w-24 text-white focus:outline-none focus:border-primary disabled:opacity-40 disabled:cursor-not-allowed"
+                                                />
+                                                <button
+                                                    onClick={() => handleAddBonus(r._id)}
+                                                    disabled={!r.hasDeposited}
+                                                    className="px-3 py-1 bg-primary text-white text-xs rounded hover:bg-primary-dark font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                                    title={!r.hasDeposited ? 'Referred user must complete a deposit first' : 'Add bonus to referrer'}
+                                                >
+                                                    Add
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                                {referrals.length === 0 && (
+                                    <tr>
+                                        <td colSpan={6} className="py-10 text-center text-slate-500">
+                                            No referrals tracked yet
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             )}
         </div>
     );

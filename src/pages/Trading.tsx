@@ -206,7 +206,7 @@ export const Trading: React.FC = () => {
                                 <button
                                     key={p}
                                     onClick={() => setAmountPercentage(p)}
-                                    className={`py-2 rounded-lg text-sm font-bold transition-all ${
+                                    className={`py-2 rounded-none text-sm font-bold transition-all ${
                                         amountPercentage === p 
                                         ? 'bg-primary text-white shadow-md' 
                                         : 'bg-slate-800/50 text-slate-500 hover:bg-slate-800'
@@ -235,18 +235,24 @@ export const Trading: React.FC = () => {
             </div>
 
             {/* Action Buttons */}
+            {usdtBalance < 200 && (
+                <div className="bg-warning/10 border border-warning/20 p-4 rounded-xl text-warning text-sm text-center">
+                    <span className="font-bold block mb-1">Insufficient Balance</span> 
+                    You need a minimum balance of 200 USDT to execute trades.
+                </div>
+            )}
             <div className="grid grid-cols-2 gap-4">
                 <button 
                     onClick={() => handleTrade('buy')}
-                    disabled={loading}
-                    className="py-5 rounded-2xl bg-success text-white font-bold text-xl shadow-lg shadow-success/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                    disabled={loading || usdtBalance < 200}
+                    className="py-5 rounded-none bg-success text-white font-bold text-xl shadow-lg shadow-success/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                     <TrendingUp className="w-6 h-6" /> Buy
                 </button>
                 <button 
                     onClick={() => handleTrade('sell')}
-                    disabled={loading}
-                    className="py-5 rounded-2xl bg-error text-white font-bold text-xl shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                    disabled={loading || usdtBalance < 200}
+                    className="py-5 rounded-none bg-error text-white font-bold text-xl shadow-lg shadow-error/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                     <TrendingDown className="w-6 h-6" /> Sell
                 </button>
@@ -387,7 +393,7 @@ export const Trading: React.FC = () => {
                             </div>
                         </div>
                         
-                        <button onClick={() => setSelectedTrade(null)} className="w-full mt-6 py-3 rounded-xl bg-slate-800 text-white font-bold hover:bg-slate-700 transition-colors">
+                        <button onClick={() => setSelectedTrade(null)} className="w-full mt-6 py-3 rounded-none bg-slate-800 text-white font-bold hover:bg-slate-700 transition-colors">
                             Close
                         </button>
                     </div>

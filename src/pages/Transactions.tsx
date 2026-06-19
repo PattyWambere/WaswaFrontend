@@ -115,7 +115,7 @@ export const Deposit: React.FC = () => {
                   </p>
                   <button
                     onClick={copyToClipboard}
-                    className="flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 hover:bg-primary/20 text-slate-400 hover:text-primary transition-all shrink-0"
+                    className="flex items-center justify-center w-10 h-10 rounded-none bg-slate-800 hover:bg-primary/20 text-slate-400 hover:text-primary transition-all shrink-0"
                   >
                     {copied ? (
                       <Check className="w-5 h-5 text-success animate-in zoom-in" />
@@ -233,7 +233,7 @@ export const Deposit: React.FC = () => {
                       setProofSubmitting(false);
                     }
                   }}
-                  className="w-full py-4 rounded-xl bg-primary hover:bg-primary-light text-white font-bold text-lg shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full py-4 rounded-none bg-primary hover:bg-primary-light text-white font-bold text-lg shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center gap-3 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {proofSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <BadgeCheck className="w-6 h-6" />}
                   Submit Proof
@@ -252,7 +252,7 @@ export const Deposit: React.FC = () => {
               setProofFile(null);
               setProofSubmitted(false);
             }}
-            className="w-full py-3 rounded-xl bg-dark border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white font-medium transition-all relative z-10"
+            className="w-full py-3 rounded-none bg-dark border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white font-medium transition-all relative z-10"
           >
             Back to Dashboard
           </button>
@@ -336,7 +336,7 @@ export const Deposit: React.FC = () => {
           <button
             disabled={!walletSetting}
             type="submit"
-            className="w-full py-4 rounded-xl bg-primary hover:bg-primary-light text-white font-bold text-lg shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+            className="w-full py-4 rounded-none bg-primary hover:bg-primary-light text-white font-bold text-lg shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
           >
             Generate Deposit Address
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -588,7 +588,7 @@ export const Withdraw: React.FC = () => {
           <button
             disabled={loading}
             type="submit"
-            className="btn-primary w-full py-3 flex items-center justify-center gap-2"
+            className="btn-primary rounded-none w-full py-3 flex items-center justify-center gap-2"
           >
             {loading && <Loader2 className="w-5 h-5 animate-spin" />}
             Request Withdrawal

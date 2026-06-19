@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Phone, Loader2, CheckCircle, User as UserIcon } from 'lucide-react';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
@@ -10,6 +10,13 @@ const ProfileForm: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        if (user) {
+            setFullName(user.fullName || '');
+            setPhoneNumber(user.phoneNumber || '');
+        }
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -114,7 +121,7 @@ const ProfileForm: React.FC = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="btn-primary px-8 py-2.5 flex items-center gap-2"
+                        className="btn-primary rounded-none px-8 py-2.5 flex items-center gap-2"
                     >
                         {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                         {loading ? 'Saving...' : 'Save Changes'}

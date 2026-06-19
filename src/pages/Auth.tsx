@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/api';
-import { Mail, Lock, Loader2, AlertCircle, User as UserIcon, Phone, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Loader2, AlertCircle, User as UserIcon, Phone, ArrowLeft, Gift } from 'lucide-react';
 
 export const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -214,6 +214,7 @@ export const ForgotPassword: React.FC = () => {
 
 export const Register: React.FC = () => {
     const location = useLocation();
+    const [searchParams] = useSearchParams();
     const [step, setStep] = useState<'register' | 'verify'>(location.state?.step || 'register');
     const [otp, setOtp] = useState('');
     const [resendCooldown, setResendCooldown] = useState(0);
@@ -223,11 +224,18 @@ export const Register: React.FC = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [referralCode, setReferralCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    // Pre-fill referral code from URL ?ref= param
+    useEffect(() => {
+        const ref = searchParams.get('ref');
+        if (ref) setReferralCode(ref.toUpperCase());
+    }, [searchParams]);
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
@@ -254,7 +262,8 @@ export const Register: React.FC = () => {
                 email,
                 phoneNumber,
                 password,
-                role: 'user'
+                role: 'user',
+                ...(referralCode && { referralCode: referralCode.toUpperCase() }),
             });
             setStep('verify');
             setResendCooldown(60);
@@ -394,6 +403,23 @@ export const Register: React.FC = () => {
                                             />
                                         </div>
                                     </div>
+                                </div>
+
+                                <div>
+                                    <label className="label">Referral Code <span className="text-slate-500 font-normal text-xs">(optional)</span></label>
+                                    <div className="relative">
+                                        <Gift className="absolute left-3 top-2.5 h-5 w-5 text-slate-500" />
+                                        <input
+                                            type="text"
+                                            className="input-field w-full pl-10 font-mono tracking-widest uppercase"
+                                            placeholder="e.g. AB12CD34"
+                                            value={referralCode}
+                                            onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+                                        />
+                                    </div>
+                                    {referralCode && (
+                                        <p className="text-xs text-success mt-1">✓ Referral code applied</p>
+                                    )}
                                 </div>
                             </div>
 

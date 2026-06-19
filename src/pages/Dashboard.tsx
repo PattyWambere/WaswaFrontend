@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/api';
 import { useAuth } from '../context/AuthContext';
 import { Balance, Transaction } from '../types';
-import { Wallet, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
+import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, Gift, Users, Copy, Share2, CheckCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Dashboard: React.FC = () => {
@@ -10,6 +10,13 @@ export const Dashboard: React.FC = () => {
     const [balances, setBalances] = useState<Balance[]>([]);
     const [history, setHistory] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
+    const [referralInfo, setReferralInfo] = useState<{
+        referralCode: string;
+        referralLink: string;
+        referralBonus: number;
+        referralCount: number;
+    } | null>(null);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -27,12 +34,43 @@ export const Dashboard: React.FC = () => {
                 } catch (err) {
                     console.error('Failed to fetch transaction history', err);
                 }
+
+                try {
+                    const refRes = await api.get('/user/referral-info');
+                    setReferralInfo(refRes.data);
+                } catch (err) {
+                    console.error('Failed to fetch referral info', err);
+                }
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
     }, []);
+
+    const handleCopy = () => {
+        if (referralInfo?.referralLink) {
+            navigator.clipboard.writeText(referralInfo.referralLink);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2500);
+        }
+    };
+
+    const handleShare = async () => {
+        if (navigator.share && referralInfo) {
+            try {
+                await navigator.share({
+                    title: 'Join CrossTradeX',
+                    text: `Join CrossTradeX using my referral code ${referralInfo.referralCode}!`,
+                    url: referralInfo.referralLink,
+                });
+            } catch {
+                handleCopy();
+            }
+        } else {
+            handleCopy();
+        }
+    };
 
     if (loading) return <div>Loading dashboard...</div>;
 
@@ -90,6 +128,71 @@ export const Dashboard: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {/* ── Referral Card ── */}
+            {referralInfo && (
+                <div className="card">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-5">
+                        <div>
+                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                <Gift className="w-5 h-5 text-primary" /> Refer &amp; Earn
+                            </h3>
+                            <p className="text-slate-400 text-sm mt-1">Share your link — earn a bonus when friends complete their first deposit</p>
+                        </div>
+                        {referralInfo.referralBonus > 0 && (
+                            <Link
+                                to="/security"
+                                className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold"
+                                style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid #22c55e', color: '#22c55e' }}
+                            >
+                                🎉 {referralInfo.referralBonus} USDT bonus ready → Redeem
+                            </Link>
+                        )}
+                    </div>
+
+                    {/* Stats row */}
+                    <div className="grid grid-cols-3 gap-4 mb-5">
+                        <div className="bg-slate-800/60 rounded-xl p-4 text-center border border-slate-700/40">
+                            <p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Your Code</p>
+                            <p className="font-mono text-2xl font-black text-white tracking-widest">{referralInfo.referralCode}</p>
+                        </div>
+                        <div className="bg-slate-800/60 rounded-xl p-4 text-center border border-slate-700/40">
+                            <p className="text-slate-500 text-xs uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Users className="w-3 h-3" /> Referred</p>
+                            <p className="text-2xl font-black text-success">{referralInfo.referralCount}</p>
+                        </div>
+                        <div className={`rounded-xl p-4 text-center border ${
+                            referralInfo.referralBonus > 0
+                                ? 'bg-success/10 border-success/30'
+                                : 'bg-slate-800/60 border-slate-700/40'
+                        }`}>
+                            <p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Pending Bonus</p>
+                            <p className={`text-2xl font-black ${
+                                referralInfo.referralBonus > 0 ? 'text-success' : 'text-slate-500'
+                            }`}>{referralInfo.referralBonus} USDT</p>
+                        </div>
+                    </div>
+
+                    {/* Link row */}
+                    <div className="flex gap-3">
+                        <div className="flex-1 bg-slate-800/60 border border-slate-700/40 rounded-lg px-4 py-2.5 font-mono text-sm text-slate-400 overflow-hidden text-ellipsis whitespace-nowrap select-all">
+                            {referralInfo.referralLink}
+                        </div>
+                        <button
+                            onClick={handleCopy}
+                            className="btn-secondary flex items-center gap-2 px-4 shrink-0"
+                        >
+                            {copied ? <CheckCheck className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
+                            {copied ? 'Copied!' : 'Copy'}
+                        </button>
+                        <button
+                            onClick={handleShare}
+                            className="btn-primary flex items-center gap-2 px-4 shrink-0"
+                        >
+                            <Share2 className="w-4 h-4" /> Share
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Recent History */}
             <div className="card">
