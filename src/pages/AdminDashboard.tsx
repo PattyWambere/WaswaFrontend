@@ -737,6 +737,11 @@ export const AdminDashboard: React.FC = () => {
                                                 if (!newSignal.startTime || !newSignal.endTime) {
                                                     return alert('Please set start and end times for bonus signals');
                                                 }
+                                                // Convert local datetime-local string to UTC ISO string
+                                                // datetime-local gives "YYYY-MM-DDTHH:mm" (no timezone) — 
+                                                // new Date() treats it as local time and toISOString() converts to UTC.
+                                                payload.startTime = new Date(newSignal.startTime).toISOString();
+                                                payload.endTime = new Date(newSignal.endTime).toISOString();
                                             }
 
                                             if (!newSignal.symbol) {
