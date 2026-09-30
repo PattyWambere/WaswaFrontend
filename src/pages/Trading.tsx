@@ -18,6 +18,18 @@ import { AdvancedRealTimeChart } from "react-ts-tradingview-widgets";
 const TRADING_PAIRS = [
     { id: 'BTC/USDT', name: 'BTC/USDT', price: 50200 },
     { id: 'ETH/USDT', name: 'ETH/USDT', price: 2850 },
+    { id: 'BNB/USDT', name: 'BNB/USDT', price: 600 },
+    { id: 'SOL/USDT', name: 'SOL/USDT', price: 140 },
+    { id: 'XRP/USDT', name: 'XRP/USDT', price: 0.60 },
+    { id: 'ADA/USDT', name: 'ADA/USDT', price: 0.45 },
+    { id: 'TRX/USDT', name: 'TRX/USDT', price: 0.12 },
+    { id: 'LINK/USDT', name: 'LINK/USDT', price: 14 },
+    { id: 'DOGE/USDT', name: 'DOGE/USDT', price: 0.15 },
+    { id: 'XLM/USDT', name: 'XLM/USDT', price: 0.11 },
+    { id: 'ZEC/USDT', name: 'ZEC/USDT', price: 22 },
+    { id: 'XMR/USDT', name: 'XMR/USDT', price: 120 },
+    { id: 'USDC/USDT', name: 'USDC/USDT', price: 1.00 },
+    { id: 'XAUT/USDT', name: 'XAUT/USDT', price: 2300 },
     { id: 'USDT/USD', name: 'USDT/USD', price: 1.00 }
 ];
 
