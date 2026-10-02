@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Search, Bell, MoreVertical, FileText, Download, ChevronRight, ChevronDown, AlignLeft } from 'lucide-react';
+import React from 'react';
+import { Search, Bell, FileText, Download, ChevronRight, ChevronDown } from 'lucide-react';
 
 interface TokenData {
     symbol: string;
