@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, FileText, Download, ChevronRight, ChevronDown } from 'lucide-react';
+import { Search, Bell, FileText, Download, ChevronRight, ChevronDown, Eye, EyeOff } from 'lucide-react';
+import api from '../api/api';
 
 interface TokenData {
     symbol: string;
@@ -63,6 +64,21 @@ export const Dashboard: React.FC = () => {
         { title: 'Top Gainer', items: [] as any[] },
         { title: 'Top Volume', items: [] as any[] }
     ]);
+    const [totalBalance, setTotalBalance] = useState<number>(0);
+    const [showBalance, setShowBalance] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchUserBalance = async () => {
+            try {
+                const balRes = await api.get('/user/balances');
+                const total = balRes.data.reduce((acc: number, curr: any) => acc + curr.amount, 0);
+                setTotalBalance(total);
+            } catch (err) {
+                console.error('Failed to fetch balances', err);
+            }
+        };
+        fetchUserBalance();
+    }, []);
 
     useEffect(() => {
         const targetSymbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'TRXUSDT', 'LINKUSDT', 'DOTUSDT', 'LTCUSDT', 'BCHUSDT', 'XLMUSDT', 'NEARUSDT', 'AVAXUSDT', 'SHIBUSDT'];
@@ -131,10 +147,34 @@ export const Dashboard: React.FC = () => {
     return (
         <div className="bg-dark min-h-screen text-slate-100 font-sans overflow-x-hidden p-6 -mx-6 -mt-6">
             {/* Top Navigation */}
-            <div className="flex items-center gap-6 mb-8 text-slate-400 text-sm font-medium">
+            <div className="flex items-center gap-6 mb-6 text-slate-400 text-sm font-medium">
                 <div className="text-white border-b-2 border-white pb-1 cursor-pointer">Overview</div>
                 <div className="hover:text-white cursor-pointer pb-1 transition-colors">Trading Data</div>
                 <div className="hover:text-white cursor-pointer pb-1 transition-colors">Token Unlock</div>
+            </div>
+
+            {/* Balance Overview */}
+            <div className="mb-8 card flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h2 className="text-slate-400 text-sm font-medium mb-1 flex items-center gap-2">
+                        Estimated Balance
+                        <button 
+                            onClick={() => setShowBalance(!showBalance)}
+                            className="text-slate-400 hover:text-white transition-colors"
+                        >
+                            {showBalance ? <Eye size={16} /> : <EyeOff size={16} />}
+                        </button>
+                    </h2>
+                    <div className="flex items-baseline gap-2 mt-1">
+                        <span className="text-3xl font-bold text-white">
+                            {showBalance ? `$${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '********'}
+                        </span>
+                    </div>
+                </div>
+                <div className="flex gap-3 mt-5 md:mt-0">
+                    <button className="btn-primary rounded-xl px-6">Deposit</button>
+                    <button className="btn-secondary rounded-xl px-6 bg-slate-800 hover:bg-slate-700">Withdraw</button>
+                </div>
             </div>
 
             {/* Widgets */}
