@@ -1,261 +1,226 @@
-import React, { useEffect, useState } from 'react';
-import api from '../api/api';
-import { useAuth } from '../context/AuthContext';
-import { Balance, Transaction } from '../types';
-import { Wallet, ArrowUpRight, ArrowDownLeft, Clock, Gift, Users, Copy, Share2, CheckCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Search, Bell, MoreVertical, FileText, Download, ChevronRight, ChevronDown, AlignLeft } from 'lucide-react';
+
+interface TokenData {
+    symbol: string;
+    name: string;
+    price: string;
+    originalPrice?: string;
+    change: number;
+    volume: string;
+    marketCap: string;
+    color: string;
+}
+
+const widgets = [
+    {
+        title: 'Hot',
+        items: [
+            { symbol: 'BNB', price: '$780.50', change: 1.46, color: 'bg-[#F3BA2F]' },
+            { symbol: 'BTC', price: '$86.59K', change: 3.35, color: 'bg-[#F7931A]' },
+            { symbol: 'ETH', price: '$2.74K', change: 1.93, color: 'bg-[#627EEA]' },
+        ]
+    },
+    {
+        title: 'New',
+        items: [
+            { symbol: 'ADBEB', price: '$240.06', change: -1.78, color: 'bg-red-500' },
+            { symbol: 'FWDIB', price: '$8.31', change: 5.73, color: 'bg-orange-500' },
+            { symbol: 'HPEB', price: '$68.37', change: 10.13, color: 'bg-green-500' },
+        ]
+    },
+    {
+        title: 'Top Gainer',
+        items: [
+            { symbol: 'SAND', price: '$0.06776', change: 58.90, color: 'bg-blue-400' },
+            { symbol: 'GTC', price: '$0.12485', change: 27.75, color: 'bg-green-400' },
+            { symbol: 'NIGHT', price: '$0.0481', change: 25.88, color: 'bg-purple-500' },
+        ]
+    },
+    {
+        title: 'Top Volume',
+        items: [
+            { symbol: 'BTC', price: '$86.59K', change: 3.35, color: 'bg-[#F7931A]' },
+            { symbol: 'ETH', price: '$2.74K', change: 1.93, color: 'bg-[#627EEA]' },
+            { symbol: 'SOL', price: '$121.93', change: 3.69, color: 'bg-[#14F195]' },
+        ]
+    }
+];
+
+const tokens: TokenData[] = [
+    { symbol: 'BTC', name: 'Bitcoin', price: '86,594.22', originalPrice: '$86,594.22', change: 3.35, volume: '$41.50B', marketCap: '$1.74T', color: 'bg-[#F7931A]' },
+    { symbol: 'ETH', name: 'Ethereum', price: '2,740.30', originalPrice: '$2,740.30', change: 1.93, volume: '$16.40B', marketCap: '$337.04B', color: 'bg-[#627EEA]' },
+    { symbol: 'USDT', name: 'USDT', price: '1.00', originalPrice: '$1.00', change: 0.01, volume: '$88.95B', marketCap: '$184.00B', color: 'bg-[#26A17B]' },
+    { symbol: 'BNB', name: 'BNB Chain', price: '780.50', originalPrice: '$780.50', change: 1.46, volume: '$1.60B', marketCap: '$104.20B', color: 'bg-[#F3BA2F]' },
+    { symbol: 'XRP', name: 'XRP', price: '1.53', originalPrice: '$1.53', change: 3.20, volume: '$3.70B', marketCap: '$97.12B', color: 'bg-[#23292F]' },
+    { symbol: 'USDC', name: 'USDC', price: '1.00', originalPrice: '$1.00', change: -0.01, volume: '$21.01B', marketCap: '$73.95B', color: 'bg-[#2775CA]' },
+    { symbol: 'SOL', name: 'Solana', price: '121.93', originalPrice: '$121.93', change: 3.69, volume: '$4.44B', marketCap: '$72.29B', color: 'bg-[#14F195]' },
+    { symbol: 'TRX', name: 'TRON', price: '0.3349', originalPrice: '$0.3349', change: 0.63, volume: '$423.15M', marketCap: '$31.80B', color: 'bg-[#FF0013]' },
+    { symbol: 'ZEC', name: 'Zcash', price: '1,380.91', originalPrice: '$1,380.91', change: -0.78, volume: '$1.35B', marketCap: '$23.54B', color: 'bg-[#F4B728]' },
+    { symbol: 'HYPE', name: 'Hyperliquid', price: '90.34', originalPrice: '$90.34', change: 1.37, volume: '$870.31M', marketCap: '$22.88B', color: 'bg-[#43E4B0]' },
+    { symbol: 'DOGE', name: 'Dogecoin', price: '0.09656', originalPrice: '$0.09656', change: 2.68, volume: '$1.11B', marketCap: '$16.72B', color: 'bg-[#C2A633]' },
+    { symbol: 'XLM', name: 'Stellar Lumens', price: '0.221', originalPrice: '$0.221', change: 2.19, volume: '$233.44M', marketCap: '$11.27B', color: 'bg-[#14B6E7]' },
+    { symbol: 'LINK', name: 'Chainlink', price: '14.35', originalPrice: '$14.35', change: 0.44, volume: '$517.72M', marketCap: '$10.78B', color: 'bg-[#2A5ADA]' },
+    { symbol: 'WBETH', name: 'Wrapped Beacon ETH', price: '3,035.92', originalPrice: '$3,035.92', change: 1.54, volume: '$3.08M', marketCap: '$10.28B', color: 'bg-[#E3E3E3]' },
+    { symbol: 'WBTC', name: 'Wrapped Bitcoin', price: '86,603.52', originalPrice: '$86,603.52', change: 3.18, volume: '$230.22M', marketCap: '$10.12B', color: 'bg-[#F2A900]' },
+    { symbol: 'USDS', name: 'USDS', price: '0.9998', originalPrice: '$0.9998', change: -0.02, volume: '$291.76M', marketCap: '$9.95B', color: 'bg-[#000000]' },
+    { symbol: 'ADA', name: 'Cardano', price: '0.2548', originalPrice: '$0.2548', change: 3.75, volume: '$652.93M', marketCap: '$9.46B', color: 'bg-[#0033AD]' },
+    { symbol: 'UNI', name: 'Uniswap', price: '9.04', originalPrice: '$9.04', change: -0.33, volume: '$651.77M', marketCap: '$8.08B', color: 'bg-[#FF007A]' },
+    { symbol: 'NEAR', name: 'NEAR Protocol', price: '4.88', originalPrice: '$4.88', change: -1.51, volume: '$1.31B', marketCap: '$6.46B', color: 'bg-[#000000]' },
+    { symbol: 'BCH', name: 'Bitcoin Cash', price: '315.10', originalPrice: '$315.10', change: 2.84, volume: '$274.59M', marketCap: '$6.35B', color: 'bg-[#0AC18E]' },
+];
 
 export const Dashboard: React.FC = () => {
-    const { user } = useAuth();
-    const [balances, setBalances] = useState<Balance[]>([]);
-    const [history, setHistory] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [referralInfo, setReferralInfo] = useState<{
-        referralCode: string;
-        referralLink: string;
-        referralBonus: number;
-        referralCount: number;
-    } | null>(null);
-    const [copied, setCopied] = useState(false);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                try {
-                    const balRes = await api.get('/user/balances');
-                    setBalances(balRes.data);
-                } catch (err) {
-                    console.error('Failed to fetch balances', err);
-                }
-
-                try {
-                    const histRes = await api.get('/user/history');
-                    setHistory(histRes.data.slice(0, 5));
-                } catch (err) {
-                    console.error('Failed to fetch transaction history', err);
-                }
-
-                try {
-                    const refRes = await api.get('/user/referral-info');
-                    setReferralInfo(refRes.data);
-                } catch (err) {
-                    console.error('Failed to fetch referral info', err);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
-
-    const handleCopy = () => {
-        if (referralInfo?.referralLink) {
-            navigator.clipboard.writeText(referralInfo.referralLink);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2500);
-        }
-    };
-
-    const handleShare = async () => {
-        if (navigator.share && referralInfo) {
-            try {
-                await navigator.share({
-                    title: 'Join CrossTradeX',
-                    text: `Join CrossTradeX using my referral code ${referralInfo.referralCode}!`,
-                    url: referralInfo.referralLink,
-                });
-            } catch {
-                handleCopy();
-            }
-        } else {
-            handleCopy();
-        }
-    };
-
-    if (loading) return <div>Loading dashboard...</div>;
-
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div>
-                    <h2 className="text-3xl font-bold text-white">Welcome back, {user?.fullName || 'User'}!</h2>
-                    <p className="text-slate-400 mt-1">Here's what's happening with your assets today.</p>
-                </div>
+        <div className="bg-[#181a20] min-h-screen text-white font-sans overflow-x-hidden p-6 -mx-6 -mt-6">
+            {/* Top Navigation */}
+            <div className="flex items-center gap-6 mb-8 text-[#848E9C] text-sm font-medium">
+                <div className="text-white border-b-2 border-white pb-1 cursor-pointer">Overview</div>
+                <div className="hover:text-white cursor-pointer pb-1">Trading Data</div>
+                <div className="hover:text-white cursor-pointer pb-1">Token Unlock</div>
             </div>
 
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                    <Wallet className="w-5 h-5 text-primary" /> Your Balances
-                </h3>
-                <div className="grid grid-cols-2 sm:flex gap-3 w-full sm:w-auto mt-4 sm:mt-0">
-                    <Link to="/deposit" className="btn-secondary flex items-center justify-center gap-2 text-sm sm:text-base py-3">
-                        <ArrowDownLeft className="w-4 h-4 shrink-0" /> <span className="truncate">Deposit</span>
-                    </Link>
-                    <Link to="/withdraw" className="btn-primary flex items-center justify-center gap-2 text-sm sm:text-base py-3">
-                        <ArrowUpRight className="w-4 h-4 shrink-0" /> <span className="truncate">Withdraw</span>
-                    </Link>
-                </div>
-            </div>
-
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {balances.length > 0 ? balances.map((bal) => (
-                    <div key={bal._id} className="card relative overflow-hidden group hover:border-primary/50 transition-colors">
-                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                            <Wallet className="w-20 h-20" />
+            {/* Widgets */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+                {widgets.map((widget, i) => (
+                    <div key={i} className="bg-[#1e2026] rounded-xl p-4 border border-[#2b3139]">
+                        <div className="flex justify-between items-center mb-4 text-sm">
+                            <span className="text-[#848E9C] font-semibold">{widget.title}</span>
+                            <span className="text-[#848E9C] flex items-center gap-1 cursor-pointer hover:text-white">More <ChevronRight size={14} /></span>
                         </div>
-                        <p className="text-slate-400 font-medium">{bal.asset} Balance</p>
-                        <h3 className="text-4xl font-bold text-white mt-2">
-                            {bal.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                        </h3>
-                        {bal.lockedAmount > 0 && (
-                            <p className="text-sm text-warning mt-2 flex items-center gap-1">
-                                <Clock className="w-3 h-3" /> {bal.lockedAmount} locked
-                            </p>
-                        )}
-                    </div>
-                )) : (
-                    <div className="card col-span-3 text-center py-12">
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Wallet className="w-8 h-8 text-slate-500" />
-                        </div>
-                        <h3 className="text-xl font-bold text-white">No Balances Yet</h3>
-                        <p className="text-slate-500 mt-2 max-w-sm mx-auto">
-                            Make your first deposit to start managing your assets on CrossTradeX.
-                        </p>
-                        <Link to="/deposit" className="btn-primary mt-6 inline-block">Make a Deposit</Link>
-                    </div>
-                )}
-            </div>
-
-            {/* ── Referral Card ── */}
-            {referralInfo && (
-                <div className="card">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-5">
-                        <div>
-                            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                                <Gift className="w-5 h-5 text-primary" /> Refer &amp; Earn
-                            </h3>
-                            <p className="text-slate-400 text-sm mt-1">Share your link — earn a bonus when friends complete their first deposit</p>
-                        </div>
-                        {referralInfo.referralBonus > 0 && (
-                            <Link
-                                to="/security"
-                                className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold"
-                                style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid #22c55e', color: '#22c55e' }}
-                            >
-                                🎉 {referralInfo.referralBonus} USDT bonus ready → Redeem
-                            </Link>
-                        )}
-                    </div>
-
-                    {/* Stats row */}
-                    <div className="grid grid-cols-3 gap-4 mb-5">
-                        <div className="bg-slate-800/60 rounded-xl p-4 text-center border border-slate-700/40">
-                            <p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Your Code</p>
-                            <p className="font-mono text-2xl font-black text-white tracking-widest">{referralInfo.referralCode}</p>
-                        </div>
-                        <div className="bg-slate-800/60 rounded-xl p-4 text-center border border-slate-700/40">
-                            <p className="text-slate-500 text-xs uppercase tracking-wider mb-1 flex items-center justify-center gap-1"><Users className="w-3 h-3" /> Referred</p>
-                            <p className="text-2xl font-black text-success">{referralInfo.referralCount}</p>
-                        </div>
-                        <div className={`rounded-xl p-4 text-center border ${
-                            referralInfo.referralBonus > 0
-                                ? 'bg-success/10 border-success/30'
-                                : 'bg-slate-800/60 border-slate-700/40'
-                        }`}>
-                            <p className="text-slate-500 text-xs uppercase tracking-wider mb-1">Pending Bonus</p>
-                            <p className={`text-2xl font-black ${
-                                referralInfo.referralBonus > 0 ? 'text-success' : 'text-slate-500'
-                            }`}>{referralInfo.referralBonus} USDT</p>
-                        </div>
-                    </div>
-
-                    {/* Link row */}
-                    <div className="flex gap-3">
-                        <div className="flex-1 bg-slate-800/60 border border-slate-700/40 rounded-lg px-4 py-2.5 font-mono text-sm text-slate-400 overflow-hidden text-ellipsis whitespace-nowrap select-all">
-                            {referralInfo.referralLink}
-                        </div>
-                        <button
-                            onClick={handleCopy}
-                            className="btn-secondary flex items-center gap-2 px-4 shrink-0"
-                        >
-                            {copied ? <CheckCheck className="w-4 h-4 text-success" /> : <Copy className="w-4 h-4" />}
-                            {copied ? 'Copied!' : 'Copy'}
-                        </button>
-                        <button
-                            onClick={handleShare}
-                            className="btn-primary flex items-center gap-2 px-4 shrink-0"
-                        >
-                            <Share2 className="w-4 h-4" /> Share
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* Recent History */}
-            <div className="card">
-                <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-bold text-white">Recent Transactions</h3>
-                    <Link to="/history" className="text-primary text-sm font-medium hover:underline">View All</Link>
-                </div>
-
-                <div className="overflow-x-auto pb-4">
-                    <table className="w-full text-left whitespace-nowrap min-w-[600px]">
-                        <thead>
-                            <tr className="border-b border-slate-700/50 text-slate-500 text-sm">
-                                <th className="pb-3 px-2 font-medium">Type</th>
-                                <th className="pb-3 px-2 font-medium">Asset</th>
-                                <th className="pb-3 px-2 font-medium">Amount</th>
-                                <th className="pb-3 px-2 font-medium">Status</th>
-                                <th className="pb-3 px-2 font-medium text-right">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-700/30">
-                            {history.map((tx) => (
-                                <tr key={tx._id} className="group hover:bg-slate-800/30 transition-colors">
-                                    <td className="py-4 px-2">
-                                        <div className="flex items-center gap-2">
-                                            {tx.type === 'deposit' ? (
-                                                <div className="w-8 h-8 rounded-full bg-success/10 flex items-center justify-center shrink-0">
-                                                    <ArrowDownLeft className="w-4 h-4 text-success" />
-                                                </div>
-                                            ) : (
-                                                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                                                    <ArrowUpRight className="w-4 h-4 text-primary" />
-                                                </div>
-                                            )}
-                                            <span className="capitalize text-white font-medium">{tx.type}</span>
+                        <div className="space-y-3">
+                            {widget.items.map((item, j) => (
+                                <div key={j} className="flex justify-between items-center text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`w-4 h-4 rounded-full ${item.color} flex items-center justify-center text-[8px] font-bold text-white`}>
+                                            {item.symbol[0]}
                                         </div>
-                                    </td>
-                                    <td className="py-4 px-2 text-slate-300">
-                                        <div className="flex flex-col">
-                                            <span className="font-medium">{tx.asset}</span>
-                                            <span className="text-xs text-slate-500">{tx.network}</span>
-                                        </div>
-                                    </td>
-                                    <td className="py-4 px-2 text-white font-mono">{tx.amount}</td>
-                                    <td className="py-4 px-2">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-semibold
-                      ${tx.status === 'completed' || tx.status === 'approved' ? 'bg-success/10 text-success' :
-                                                tx.status === 'pending' ? 'bg-warning/10 text-warning' : 'bg-error/10 text-error'}`}>
-                                            {tx.status}
-                                        </span>
-                                    </td>
-                                    <td className="py-4 px-2 text-slate-500 text-sm text-right">
-                                        {new Date(tx.createdAt).toLocaleDateString()}
-                                    </td>
-                                </tr>
+                                        <span className="font-medium">{item.symbol}</span>
+                                    </div>
+                                    <span className="text-gray-300">{item.price}</span>
+                                    <span className={item.change >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]'}>
+                                        {item.change >= 0 ? '+' : ''}{item.change}%
+                                    </span>
+                                </div>
                             ))}
-                            {history.length === 0 && (
-                                <tr>
-                                    <td colSpan={5} className="py-10 text-center text-slate-500">No recent transactions</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Main Tabs */}
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex gap-6 text-[#848E9C] text-sm font-medium overflow-x-auto whitespace-nowrap hide-scrollbar">
+                    <span className="hover:text-white cursor-pointer">Favorites</span>
+                    <span className="text-white font-bold cursor-pointer">Cryptos</span>
+                    <span className="hover:text-white cursor-pointer">Spot</span>
+                    <span className="hover:text-white cursor-pointer">Futures</span>
+                    <span className="hover:text-white cursor-pointer">TradFi</span>
+                    <span className="hover:text-white cursor-pointer flex items-center gap-1">
+                        Alpha <span className="bg-[#F3BA2F] text-black text-[10px] px-1 rounded-sm font-bold">New</span>
+                    </span>
+                    <span className="hover:text-white cursor-pointer">New</span>
+                    <span className="hover:text-white cursor-pointer">Zones</span>
                 </div>
+                <div className="flex gap-4 text-[#848E9C]">
+                    <Search size={18} className="cursor-pointer hover:text-white" />
+                    <Bell size={18} className="cursor-pointer hover:text-white" />
+                </div>
+            </div>
+
+            {/* Sub Tabs */}
+            <div className="flex gap-3 text-xs mb-8 overflow-x-auto whitespace-nowrap hide-scrollbar pb-2">
+                <span className="bg-[#2b3139] text-white px-3 py-1.5 rounded hover:bg-[#353c45] cursor-pointer">All</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer flex items-center gap-1">
+                    bStocks <span className="text-[#F3BA2F]">New</span>
+                </span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">tCommodities</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">BSC</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">Solana</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">RWA</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">MEME</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">Payments</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">AI</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">Layer 1 / Layer 2</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">Seed</span>
+                <span className="text-[#848E9C] px-3 py-1.5 rounded hover:bg-[#2b3139] cursor-pointer">Launchpool</span>
+            </div>
+
+            {/* Table Header Area */}
+            <div className="flex justify-between items-end mb-4">
+                <div>
+                    <h1 className="text-xl font-bold mb-1">Top Tokens by Market Capitalization</h1>
+                    <p className="text-xs text-[#848E9C]">
+                        Get a comprehensive snapshot of all cryptocurrencies available on Binance. This page displays the latest prices, 24-hour trading volume, price changes, and market capitalizations for all cryptocurrencies on Binance... <span className="text-white cursor-pointer">More </span><ChevronDown size={12} className="inline" />
+                    </p>
+                </div>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                    <thead>
+                        <tr className="text-[#848E9C] border-b border-[#2b3139] hover:bg-transparent">
+                            <th className="py-3 font-normal cursor-pointer hover:text-white w-1/4">Name <span className="text-[10px]">↕</span></th>
+                            <th className="py-3 font-normal text-right cursor-pointer hover:text-white">Price <span className="text-[10px]">↕</span></th>
+                            <th className="py-3 font-normal text-right cursor-pointer hover:text-white">
+                                <span className="bg-[#2b3139] px-2 py-1 rounded">24h <ChevronDown size={12} className="inline" /></span> Change <span className="text-[10px]">↕</span>
+                            </th>
+                            <th className="py-3 font-normal text-right cursor-pointer hover:text-white">24h Volume <span className="text-[10px]">↕</span></th>
+                            <th className="py-3 font-normal text-right cursor-pointer hover:text-white">Market Cap <span className="text-[10px]">↕</span></th>
+                            <th className="py-3 font-normal text-right w-20">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tokens.map((token, index) => (
+                            <tr key={index} className="border-b border-[#2b3139]/50 hover:bg-[#1e2026] group cursor-pointer transition-colors">
+                                <td className="py-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`w-6 h-6 rounded-full ${token.color} flex items-center justify-center text-[10px] font-bold text-white shrink-0`}>
+                                            {token.symbol[0]}
+                                        </div>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="font-bold text-base">{token.symbol}</span>
+                                            <span className="text-[#848E9C] text-xs">{token.name}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="py-4 text-right">
+                                    <div className="font-medium text-base">{token.price}</div>
+                                    {token.originalPrice && <div className="text-[#848E9C] text-xs">{token.originalPrice}</div>}
+                                </td>
+                                <td className={`py-4 text-right font-medium ${token.change >= 0 ? 'text-[#0ECB81]' : 'text-[#F6465D]'}`}>
+                                    {token.change >= 0 ? '+' : ''}{token.change.toFixed(2)}%
+                                </td>
+                                <td className="py-4 text-right font-medium">
+                                    {token.volume}
+                                </td>
+                                <td className="py-4 text-right font-medium">
+                                    {token.marketCap}
+                                </td>
+                                <td className="py-4 text-right">
+                                    <div className="flex justify-end gap-3 text-[#848E9C]">
+                                        <FileText size={16} className="hover:text-white" />
+                                        <Download size={16} className="hover:text-white" />
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination / Footer */}
+            <div className="flex justify-end items-center gap-2 mt-6 text-sm text-[#848E9C]">
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">&lt;</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded bg-[#2b3139] text-white">1</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">2</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">3</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">4</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">5</button>
+                <span>...</span>
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">17</button>
+                <button className="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2b3139]">&gt;</button>
             </div>
         </div>
     );
