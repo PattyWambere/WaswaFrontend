@@ -133,9 +133,13 @@ export const Trading: React.FC = () => {
                     <h1 className="text-3xl font-bold text-white flex items-center gap-2">
                         <TrendingUp className="text-primary w-8 h-8" /> Crypto Trading
                     </h1>
-                    <p className="text-slate-400 mt-1 flex items-center gap-2">
-                        Available Balance: <span className="text-white font-bold">${usdtBalance.toLocaleString()}</span>
-                    </p>
+                    <div className="mt-3 flex items-center gap-3 bg-slate-800/50 border border-slate-700/50 py-2.5 px-4 rounded-xl w-fit">
+                        <span className="text-slate-400 text-sm font-medium">Available Balance</span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-white font-bold text-xl">${usdtBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            <span className="text-slate-500 text-xs font-bold">USDT</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
