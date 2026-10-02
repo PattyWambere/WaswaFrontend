@@ -154,26 +154,20 @@ export const Dashboard: React.FC = () => {
             </div>
 
             {/* Balance Overview */}
-            <div className="mb-8 card flex flex-col md:flex-row justify-between items-start md:items-center">
-                <div>
-                    <h2 className="text-slate-400 text-sm font-medium mb-1 flex items-center gap-2">
-                        Estimated Balance
-                        <button 
-                            onClick={() => setShowBalance(!showBalance)}
-                            className="text-slate-400 hover:text-white transition-colors"
-                        >
-                            {showBalance ? <Eye size={16} /> : <EyeOff size={16} />}
-                        </button>
-                    </h2>
-                    <div className="flex items-baseline gap-2 mt-1">
-                        <span className="text-3xl font-bold text-white">
-                            {showBalance ? `$${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '********'}
-                        </span>
-                    </div>
-                </div>
-                <div className="flex gap-3 mt-5 md:mt-0">
-                    <button className="btn-primary rounded-xl px-6">Deposit</button>
-                    <button className="btn-secondary rounded-xl px-6 bg-slate-800 hover:bg-slate-700">Withdraw</button>
+            <div className="mb-8 card">
+                <h2 className="text-slate-400 text-sm font-medium mb-1 flex items-center gap-2">
+                    Estimated Balance
+                    <button 
+                        onClick={() => setShowBalance(!showBalance)}
+                        className="text-slate-400 hover:text-white transition-colors"
+                    >
+                        {showBalance ? <Eye size={16} /> : <EyeOff size={16} />}
+                    </button>
+                </h2>
+                <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-3xl font-bold text-white">
+                        {showBalance ? `$${totalBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '********'}
+                    </span>
                 </div>
             </div>
 
